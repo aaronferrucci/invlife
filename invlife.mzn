@@ -18,15 +18,29 @@
 %
 % N x M rectangle
 % (N is horizontal length)
-int: n = 4;
-int: m = 4;
-set of int: N = 0 .. n - 1;
-set of int: M = 0 .. m - 1;
+int: n = 5;
+int: m = 5;
+set of int: N = 1..n;
+set of int: M = 1..m;
 array[N, M] of var 0..1: grid;
 
 % end_grid is initialized in a data file
-array[N, M] of 0..1: end_grid;
+array[N, M] of var 0..1: end_grid;
+
+end_grid=[|
+ 0, 0, 0, 0, 0|
+ 0, 0, 1, 0, 0|
+ 0, 0, 1, 0, 0|
+ 0, 0, 1, 0, 0|
+ 0, 0, 0, 0, 0|];
 
 constraint forall(i in N, j in M) (
-  grid[i, j] = end_grid[i, j];
+  grid[i, j] = end_grid[i, j]
 );
+
+solve satisfy;
+
+output
+[show_int(1, grid[i, j]) ++ 
+if j mod n == 0 then "\n" else " " endif 
+| i in M, j in N];
