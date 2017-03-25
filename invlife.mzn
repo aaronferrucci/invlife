@@ -33,14 +33,26 @@ end_grid=[|
  0, 0, 1, 0, 0|
  0, 0, 1, 0, 0|
  0, 0, 0, 0, 0|];
+var int: mod_test = 6 mod 5;
+var int: s = sum([end_grid[X, Y] | X in 1..3, Y in 1..3]);
 
-constraint forall(i in N, j in M) (
-  grid[i, j] = end_grid[i, j]
-);
+array[1..n*m] of var int: neighbor_count = [ sum([grid[((i + n - 1 + x) mod n) + 1, ((j + m - 1 + y) mod m) + 1] | x in -1..1, y in -1..1]) | i in N, j in M];
+% array[1..n*m] of var int: mins = [ min([((i + n - 1 + x) mod n) + 1 | x in -1..1]) | i in N, j in M];
+% array[1..n*m] of var int: medians = [ sum([((i + n - 1 + x) mod n) + 1 | x in -1..1]) | i in N, j in M];
+% array[1..n*m] of var int: maxes = [ max([((i + n - 1 + x) mod n) + 1 | x in -1..1]) | i in N, j in M];
+%constraint forall(i in N, j in M) (
+%  let {var int: neighbor_sum =  } in
+%  end_grid[i, j] -> grid[i, j] /\ (sum(grid[x, y]) == 2 \/ sum(grid[x, y]) == 3) \/
+%                    !grid[i, j] /\ sum(grid[x, y]) == 3
+%);
 
 solve satisfy;
 
-output
-[show_int(1, grid[i, j]) ++ 
-if j mod n == 0 then "\n" else " " endif 
-| i in M, j in N];
+output 
+["grid:\n"] ++ [show_int(1, grid[i, j]) ++ if j mod n == 0 then "\n" else " " endif | i in M, j in N] ++ ["\n"] ++ 
+["end_grid:\n"] ++ [show_int(1, end_grid[i, j]) ++ if j mod n == 0 then "\n" else " " endif | i in M, j in N] ++ ["\n"] ++ 
+["neighbor_count:\n"] ++ [show_int(1, neighbor_count[i]) ++ if i mod n == 0 then "\n" else " " endif | i in 1 .. n*m];
+%output
+%[show_int(1, s) ++ ", " ++show_int(1, grid[i, j]) ++ 
+%if j mod n == 0 then "\n" else " " endif 
+%| i in M, j in N];
