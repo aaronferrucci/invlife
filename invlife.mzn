@@ -16,10 +16,20 @@
 %   or was
 %    dead, with 3 live neighbors
 %
+% it's convenient to count live neighbors + self (n+s), which leads to these modified inverse rules:
+%  a dead cell was:
+%    live, with 1 or 2 n+s, or more than 4 n+s
+%   or was
+%    dead, with != 3 n+s
+%  a live cell was:
+%    live, with 3 or 4 n+s
+%   or was
+%    dead, with 3 n+s
+
 % N x M rectangle
-% (N is horizontal length)
+% (N is vertical dimension)
 int: n = 5;
-int: m = 5;
+int: m = 6;
 set of int: N = 1..n;
 set of int: M = 1..m;
 array[N, M] of var 0..1: grid;
@@ -28,20 +38,16 @@ array[N, M] of var 0..1: grid;
 array[N, M] of var 0..1: end_grid;
 
 end_grid=[|
- 0, 0, 0, 0, 0|
- 0, 0, 1, 0, 0|
- 0, 0, 1, 0, 0|
- 0, 0, 1, 0, 0|
- 0, 0, 0, 0, 0|];
-var int: mod_test = 6 mod 5;
-var int: s = sum([end_grid[X, Y] | X in 1..3, Y in 1..3]);
+ 0, 0, 0, 0, 0, 0|
+ 0, 1, 0, 0, 0, 0|
+ 0, 1, 0, 0, 0, 0|
+ 0, 1, 0, 0, 0, 0|
+ 0, 0, 0, 0, 0, 0|];
 
-array[1..n*m] of var int: neighbor_count = [ sum([grid[((i + n - 1 + x) mod n) + 1, ((j + m - 1 + y) mod m) + 1] | x in -1..1, y in -1..1]) | i in N, j in M];
-% array[1..n*m] of var int: mins = [ min([((i + n - 1 + x) mod n) + 1 | x in -1..1]) | i in N, j in M];
-% array[1..n*m] of var int: medians = [ sum([((i + n - 1 + x) mod n) + 1 | x in -1..1]) | i in N, j in M];
-% array[1..n*m] of var int: maxes = [ max([((i + n - 1 + x) mod n) + 1 | x in -1..1]) | i in N, j in M];
+array[N, M] of var int: neighbor_count =
+  array2d(N, M, [ sum([end_grid[((j + n - 1 + y) mod n) + 1, ((i + m - 1 + x) mod m) + 1] | y in -1..1, x in -1..1]) | j in N, i in M]);
+
 %constraint forall(i in N, j in M) (
-%  let {var int: neighbor_sum =  } in
 %  end_grid[i, j] -> grid[i, j] /\ (sum(grid[x, y]) == 2 \/ sum(grid[x, y]) == 3) \/
 %                    !grid[i, j] /\ sum(grid[x, y]) == 3
 %);
@@ -49,9 +55,9 @@ array[1..n*m] of var int: neighbor_count = [ sum([grid[((i + n - 1 + x) mod n) +
 solve satisfy;
 
 output 
-["grid:\n"] ++ [show_int(1, grid[i, j]) ++ if j mod n == 0 then "\n" else " " endif | i in M, j in N] ++ ["\n"] ++ 
-["end_grid:\n"] ++ [show_int(1, end_grid[i, j]) ++ if j mod n == 0 then "\n" else " " endif | i in M, j in N] ++ ["\n"] ++ 
-["neighbor_count:\n"] ++ [show_int(1, neighbor_count[i]) ++ if i mod n == 0 then "\n" else " " endif | i in 1 .. n*m];
+["grid:\n"] ++ [show_int(1, grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
+["end_grid:\n"] ++ [show_int(1, end_grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
+["neighbor_count:\n"] ++ [show_int(1, neighbor_count[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M];
 %output
 %[show_int(1, s) ++ ", " ++show_int(1, grid[i, j]) ++ 
 %if j mod n == 0 then "\n" else " " endif 
