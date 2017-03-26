@@ -39,25 +39,28 @@ array[N, M] of var 0..1: end_grid;
 
 end_grid=[|
  0, 0, 0, 0, 0, 0|
- 0, 1, 0, 0, 0, 0|
- 0, 1, 0, 0, 0, 0|
- 0, 1, 0, 0, 0, 0|
+ 0, 0, 1, 0, 0, 0|
+ 0, 0, 1, 0, 0, 0|
+ 0, 0, 1, 0, 0, 0|
  0, 0, 0, 0, 0, 0|];
 
-array[N, M] of var int: neighbor_count =
-  array2d(N, M, [ sum([end_grid[((j + n - 1 + y) mod n) + 1, ((i + m - 1 + x) mod m) + 1] | y in -1..1, x in -1..1]) | j in N, i in M]);
+array[N, M] of var int: nps =
+  array2d(N, M, [ sum([grid[((j + n - 1 + y) mod n) + 1, ((i + m - 1 + x) mod m) + 1] | y in -1..1, x in -1..1]) | j in N, i in M]);
 
-%constraint forall(i in N, j in M) (
-%  end_grid[i, j] -> grid[i, j] /\ (sum(grid[x, y]) == 2 \/ sum(grid[x, y]) == 3) \/
-%                    !grid[i, j] /\ sum(grid[x, y]) == 3
-%);
+constraint forall(j in N, i in M) (
+  ((end_grid[j, i] = 1) /\ (grid[j, i] = 1) /\ ((nps[j, i] == 3 \/ nps[j, i] == 4) \/
+                    (grid[j, i] = 0) /\ nps[j, i] != 3))
+    \/
+  ((end_grid[j, i] = 0) /\ (grid[j, i] = 1) /\ ((nps[j, i] == 1 \/ nps[j, i] == 2 \/ nps[j, i] > 4) \/
+                      (grid[j, i] = 0) /\ nps[j, i] != 3))
+);
 
 solve satisfy;
 
 output 
 ["grid:\n"] ++ [show_int(1, grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
 ["end_grid:\n"] ++ [show_int(1, end_grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
-["neighbor_count:\n"] ++ [show_int(1, neighbor_count[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M];
+["nps:\n"] ++ [show_int(1, nps[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M];
 %output
 %[show_int(1, s) ++ ", " ++show_int(1, grid[i, j]) ++ 
 %if j mod n == 0 then "\n" else " " endif 
