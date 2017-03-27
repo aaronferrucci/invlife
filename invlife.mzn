@@ -53,21 +53,9 @@ constraint forall (j in N, i in M) (
     grid[j, i] = 0 /\ nps[j, i] != 3
 );
 
-%constraint forall(j in N, i in M) (
-%  ((end_grid[j, i] = 1) /\ (grid[j, i] = 1) /\ ((nps[j, i] == 3 \/ nps[j, i] == 4) \/
-%                    (grid[j, i] = 0) /\ nps[j, i] != 3))
-%    \/
-%  ((end_grid[j, i] = 0) /\ (grid[j, i] = 1) /\ ((nps[j, i] == 1 \/ nps[j, i] == 2 \/ nps[j, i] > 4) \/
-%                      (grid[j, i] = 0) /\ nps[j, i] != 3))
-%);
-
 solve satisfy;
 
 output 
-["grid:\n"] ++ [show_int(1, grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
-["end_grid:\n"] ++ [show_int(1, end_grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
-["nps:\n"] ++ [show_int(1, nps[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M];
-%output
-%[show_int(1, s) ++ ", " ++show_int(1, grid[i, j]) ++ 
-%if j mod n == 0 then "\n" else " " endif 
-%| i in M, j in N];
+  ["grid:\n"] ++ [show_int(1, grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
+  ["end_grid:\n"] ++ [show_int(1, end_grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++ 
+  ["nps:\n"] ++ [show_int(1, nps[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M];
