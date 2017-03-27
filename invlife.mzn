@@ -28,24 +28,16 @@
 
 % N x M rectangle
 % (N is vertical dimension)
-int: n = 5;
-int: m = 6;
+int: n;
+int: m;
+array[N, M] of var 0..1: end_grid;
+
 set of int: N = 1..n;
 set of int: M = 1..m;
 array[N, M] of var 0..1: grid;
 
-% end_grid is initialized in a data file
-array[N, M] of var 0..1: end_grid;
-
-end_grid=[|
- 0, 0, 0, 0, 0, 0|
- 0, 0, 1, 0, 0, 0|
- 0, 0, 1, 0, 0, 0|
- 0, 0, 1, 0, 0, 0|
- 0, 0, 0, 0, 0, 0|];
-
 array[N, M] of var int: nps =
-  array2d(N, M, [ sum([grid[((j + n - 1 + y) mod n) + 1, ((i + m - 1 + x) mod m) + 1] | y in -1..1, x in -1..1]) | j in N, i in M]);
+  array2d(N, M, [sum([grid[((j + n - 1 + y) mod n) + 1, ((i + m - 1 + x) mod m) + 1] | y in -1..1, x in -1..1]) | j in N, i in M]);
 
 constraint forall (j in N, i in M) (
   end_grid[j, i] = 1 ->
