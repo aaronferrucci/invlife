@@ -56,7 +56,10 @@ constraint forall (j in N, i in M) (
 solve satisfy;
 
 output 
-  ["grid:\n"] ++ [show_int(1, grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++
-  ["end_grid:\n"] ++ [show_int(1, end_grid[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++ ["\n"] ++
+  ["% input end_grid:\n% "] ++ [show_int(1, end_grid[j, i]) ++ if i mod m == 0 then "\n% " else " " endif | j in N, i in M] ++ ["\n"] ++
+  ["n = "] ++ [show_int(1, n)] ++ [";\n"] ++
+  ["m = "] ++ [show_int(1, m)] ++ [";\n"] ++
+  ["% output grid:\n"] ++
+  ["end_grid=[|\n"] ++ [" " ++ show_int(1, grid[j, i]) ++ if i mod m == 0 then if j mod n == 0 then "|];\n" else "|\n" endif else "," endif | j in N, i in M] ++ ["\n"] ++
   % ["nps:\n"] ++ [show_int(1, nps[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++
   [];
