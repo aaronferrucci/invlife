@@ -1,16 +1,19 @@
 INDATA := data/blinker.dzn
 OUTDATA := data/out.dzn
-.PHONY: all
-all: invlife.fzn $(OUTDATA)
+ALL := out print
+.PHONY: all $(ALL)
+all: $(ALL)
 
-invlife.fzn: invlife.mzn
+out: invlife.mzn $(INDATA)
 	mzn2fzn invlife.mzn -d $(INDATA)
-
-$(OUTDATA): invlife.fzn
 	flatzinc invlife.fzn | \
 	solns2out invlife.ozn | \
-	grep -v '^---' | \
-	tee $(OUTDATA)
+	grep -v '^---' > \
+	$(OUTDATA)
+
+.PHONY: print
+print: out
+	cat $(OUTDATA)
 
 .PHONY: clean
 clean:
