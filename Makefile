@@ -6,7 +6,7 @@ all: $(ALL)
 
 out: invlife.mzn $(INDATA)
 	mzn2fzn invlife.mzn -d $(INDATA)
-	flatzinc invlife.fzn | \
+	flatzinc -b lazy invlife.fzn | \
 	solns2out invlife.ozn | \
 	grep -v '^---' > \
 	$(OUTDATA)
