@@ -42,22 +42,22 @@ array[1..n*m] of var 0..1: sgrid = [ grid[j, i] | j in N, i in M];
 array[N, M] of var 0..9: nps =
   array2d(N, M, [sum([grid[((j + n - 1 + y) mod n) + 1, ((i + m - 1 + x) mod m) + 1] | y in -1..1, x in -1..1]) | j in N, i in M]);
 
-%constraint forall (j in N, i in M) (
-%  end_grid[j, i] = 1 ->
-%    if grid[j, i] == 1 then
-%      (nps[j, i] = 3 \/ nps[j, i] = 4)
-%    else
-%      nps[j, i] = 3
-%    endif
-%);
-%
-%constraint forall (j in N, i in M) (
-%  end_grid[j, i] = 0 ->
-%    grid[j, i] == 1 /\ (nps[j, i] = 1 \/ nps[j, i] = 2 \/ nps[j, i] > 4)
-%    \/
-%    grid[j, i] == 0 /\ (nps[j, i] < 3 \/ nps[j, i] > 3)
-%    % grid[j, i] == 0 /\ nps[j, i] != 3
-%);
+constraint forall (j in N, i in M) (
+  end_grid[j, i] = 1 ->
+    if grid[j, i] == 1 then
+      (nps[j, i] = 3 \/ nps[j, i] = 4)
+    else
+      nps[j, i] = 3
+    endif
+);
+
+constraint forall (j in N, i in M) (
+  end_grid[j, i] = 0 ->
+    grid[j, i] == 1 /\ (nps[j, i] = 1 \/ nps[j, i] = 2 \/ nps[j, i] > 4)
+    \/
+    grid[j, i] == 0 /\ (nps[j, i] < 3 \/ nps[j, i] > 3)
+    % grid[j, i] == 0 /\ nps[j, i] != 3
+);
 
 constraint forall (j in N, i in M) (
   end_grid[j, i] = grid[j, i]
