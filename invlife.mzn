@@ -59,15 +59,15 @@ constraint forall (j in N, i in M) (
     % grid[j, i] == 0 /\ nps[j, i] != 3
 );
 
-constraint forall (j in N, i in M) (
-  end_grid[j, i] = grid[j, i]
-);
-
 % A
 % constraint output_sum < 2 * input_sum;
 % B
 % constraint output_sum <= input_sum + min(n, m);
+
 constraint output_sum = input_sum;
+constraint forall (j in N, i in M) (
+  end_grid[j, i] = grid[j, i]
+);
 
 
 % solve :: int_search(sgrid, input_order, indomain_median, complete) satisfy;
@@ -81,5 +81,5 @@ output
   ["% output_sum = "] ++ [show_int(1, output_sum)] ++ [";\n"] ++
   ["% output grid:\n"] ++
   ["end_grid=[|\n"] ++ [" " ++ show_int(1, grid[j, i]) ++ if i mod m == 0 then if j mod n == 0 then "|];\n" else "|\n" endif else "," endif | j in N, i in M] ++ ["\n"] ++
-  % ["nps:\n"] ++ [show_int(1, nps[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++
+  ["nps:\n"] ++ [show_int(1, nps[j, i]) ++ if i mod m == 0 then "\n" else " " endif | j in N, i in M] ++
   [];
